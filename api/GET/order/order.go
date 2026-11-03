@@ -1,0 +1,53 @@
+package order
+
+import (
+	"database/sql"
+	"net/http"
+)
+type size struct{
+	small,
+	medium,
+	big bool
+}
+type OrderItem struct{
+	product string
+	Size size
+}
+type status struct{
+	created ,
+	progress,
+	cancelled,
+	dispatched,
+	delivered bool
+}
+type CreateOrder struct{
+	id    ,
+	Created string
+	Status status
+    Order OrderItem	
+}
+
+type CreateOrders struct{
+	Orders []CreateOrder
+	
+}
+
+type Handlers struct{
+	db *sql.DB
+}
+
+//retrive general lists of orders
+func Orders()http.Handler{
+	_ = &Handlers{}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//handle orders logic here 
+	})
+}
+
+//retrieve order by ID
+func OrderId()http.Handler{
+	_ = &Handlers{}
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//handle retrieve order by id here
+	})
+}
