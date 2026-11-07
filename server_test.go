@@ -64,24 +64,44 @@ func TestSimpleHTTPServer(t *testing.T) {
      response string
    }{
 
-   {http.MethodGet,nil,http.StatusFound,"This is orders endpoint"},
-   {http.MethodPost,nil,http.StatusFound,"This is order by ID endpoint"},
-   {http.MethodPut,nil,http.StatusFound,"This is payment endpoint"},
+   {http.MethodGet,nil,http.StatusFound,"get/order"},
+   {http.MethodGet,nil,http.StatusFound,"get/order/orderId"},
+   {http.MethodGet,nil,http.StatusFound,"get/payment"},
+   {http.MethodGet,nil,http.StatusFound,"get/user"},
+   {http.MethodPost,nil,http.StatusFound,"post/order"},
+   {http.MethodPost,nil,http.StatusFound,"post/order/cancel"},
+   {http.MethodPost,nil,http.StatusFound,"post/payment"},
+   {http.MethodPost,nil,http.StatusFound,"post/user"},
+   {http.MethodPut,nil,http.StatusFound,"put/order"},
+   {http.MethodPut,nil,http.StatusFound,"put/payment"},
+   {http.MethodPut,nil,http.StatusFound,"put/user"},
+   {http.MethodDelete,nil,http.StatusFound,"delete/order"},
+   {http.MethodDelete,nil,http.StatusFound,"delete/user"},
+   
    
    }
    
 fmt.Print(buf)
    client := new(http.Client)
-  // path1 := fmt.Sprintf("http://%s/orders", srv.Addr)
-  // path2 := fmt.Sprintf("http://%s/orders/orderId",srv.Addr)
-  // path3 := fmt.Sprintf("http://%s/payment",srv.Addr)
-  // path4 := fmt.Sprintf("http://%s/user",srv.Addr)
-  // path := []string{path1,path2,path3,path4}
-  path := fmt.Sprintf("http://%s", srv.Addr)
+   path1 := fmt.Sprintf("http://%s/order", srv.Addr)
+   path2 := fmt.Sprintf("http://%s/order/orderId",srv.Addr)
+   path3 := fmt.Sprintf("http://%s/payment",srv.Addr)
+   path4 := fmt.Sprintf("http://%s/user",srv.Addr)
+   path5 := fmt.Sprintf("http://%s/order", srv.Addr)
+   path6 := fmt.Sprintf("http://%s/order/cancel", srv.Addr)
+   path7 := fmt.Sprintf("http://%s/payment", srv.Addr)
+   path8 := fmt.Sprintf("http://%s/user", srv.Addr)
+   path9 := fmt.Sprintf("http://%s/order", srv.Addr)
+   path10 := fmt.Sprintf("http://%s/payment", srv.Addr)
+   path11 := fmt.Sprintf("http://%s/user", srv.Addr)
+   path12 := fmt.Sprintf("http://%s/order", srv.Addr)
+   path13 := fmt.Sprintf("http://%s/user", srv.Addr)
+   path := []string{path1,path2,path3,path4,path5,path6,path7,path8,path9,path10,path11,path12,path13}
+  
    
    for i, c := range testCases{
-    // testPath := path[i]    
-   r, err := http.NewRequest(c.method,path,c.body)
+     testPath := path[i]    
+   r, err := http.NewRequest(c.method,testPath,c.body)
    if err != nil{
    t.Errorf("%d: %v",i, err)
    continue
