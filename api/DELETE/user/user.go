@@ -14,5 +14,7 @@ func User()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle delete user logic here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("delete/user"))
 	})
 }
