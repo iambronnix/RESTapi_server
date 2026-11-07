@@ -14,6 +14,6 @@ func Users()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle users code here
 		w.WriteHeader(http.StatusFound)
-		w.Write([]byte("This is user endpoint\n")) 
+		w.Write([]byte("get/user")) 
 	})
 }

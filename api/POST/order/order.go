@@ -35,12 +35,16 @@ func Order()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle post orders logic here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("post/order"))
 	})
 }
 //cancel an order 
 func CancelOrder()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("post/order/cancel"))
 		//handle cancel logic here
 	})
 }

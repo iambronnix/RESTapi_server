@@ -42,7 +42,7 @@ func Orders()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle code here
 		w.WriteHeader(http.StatusFound)
-		w.Write([]byte("This is orders endpoint"))
+		w.Write([]byte("get/order"))
 	})
 }
 
@@ -52,6 +52,6 @@ func OrderId()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle retrieve order by id here
 		w.WriteHeader(http.StatusFound)
-		w.Write([]byte("This is order by ID endpoint"))
+		w.Write([]byte("get/order/orderId"))
 	})
 }

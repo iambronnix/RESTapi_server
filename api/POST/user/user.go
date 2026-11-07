@@ -14,6 +14,8 @@ func User()http.Handler{
 	_ = &Handlers{}
 	
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//handle post user logic here 
+		//handle post user logic here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("post/user")) 
 	})
 }

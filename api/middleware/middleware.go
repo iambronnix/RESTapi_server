@@ -1,7 +1,17 @@
 package middleware
 
 import (
-	"io"
+	gtOrder "RESTapi/api/GET/order"
+	gtPayment "RESTapi/api/GET/payment"
+	gtUser "RESTapi/api/GET/user"
+	dltOrder "RESTapi/api/DELETE/order"
+	dltUser "RESTapi/api/DELETE/user"
+	pstOrder "RESTapi/api/POST/order"
+	pstPayment "RESTapi/api/POST/payment"
+	pstUser "RESTapi/api/POST/user"
+	aptOrder "RESTapi/api/PUT/order"
+	aptPaymemt "RESTapi/api/PUT/payment"
+	aptUser "RESTapi/api/PUT/user"
 	"log"
 	"net/http"
 	"path"
@@ -101,18 +111,75 @@ func RestrictPrefix(prefix string,next http.Handler)http.Handler{
 	})
 }
 
-func DrainAndClose(next http.Handler)http.Handler{
+//inspects all GET requests url for routing to the right handler
+func GetUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-         next.ServeHTTP(w,r)
-		_,_ = io.Copy(io.Discard,r.Body)
-		_ = r.Body.Close()
+		urlPath := r.URL.Path
+		//switch acts as a secondary multiplexer 
+		switch urlPath{
+			case "/order":
+			gtOrder.Orders().ServeHTTP(w,r)
+			case "/order/orderId":
+			gtOrder.OrderId().ServeHTTP(w,r)
+			case "/payment":
+			gtPayment.Payments().ServeHTTP(w,r)
+			case "/user":
+			gtUser.Users().ServeHTTP(w,r)
+			default:
+			w.WriteHeader(http.StatusBadRequest)
+			
+		}
 	})
 }
 
-
-func allowedPaths()http.Handler{
+//inspects all POST requests url for routing to the right handler
+func PostUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//getPath := []string{"/orders","/orders/orderId","/payment","user"}
-	w.Write([]byte("hello there"))
+		urlPath := r.URL.Path
+		switch urlPath{
+			case "/order":
+			pstOrder.Order().ServeHTTP(w,r)
+			case "/order/cancel":
+			pstOrder.CancelOrder().ServeHTTP(w,r)
+			case "/payment":
+			pstPayment.Payments().ServeHTTP(w,r)
+			case "/user":
+			pstUser.User().ServeHTTP(w,r)
+			default :
+			w.WriteHeader(http.StatusBadRequest)
+			
+		}
+	})
+}
+
+//inspects all PUT requests url for routing to the right handler
+func PutUrlInspector()http.Handler{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		urlPath := r.URL.Path
+		switch urlPath{
+			case "/order":
+			aptOrder.Order().ServeHTTP(w,r)
+			case "/payment":
+			aptPaymemt.Payment().ServeHTTP(w,r)
+			case "/user":
+			aptUser.User().ServeHTTP(w,r)
+			default:
+			w.WriteHeader(http.StatusBadRequest)
+		}
+	})
+}
+
+//inspects all DELETE requests url for routing to the right handler
+func DeleteUrlInspector()http.Handler{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		urlPath := r.URL.Path
+		switch urlPath{
+			case "/order":
+			dltOrder.Order().ServeHTTP(w,r)
+			case "/user":
+			dltUser.User().ServeHTTP(w,r)
+			default:
+			w.WriteHeader(http.StatusBadRequest)
+		}
 	})
 }

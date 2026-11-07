@@ -15,5 +15,7 @@ func Order()http.Handler{
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handler all update order logic here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("put/order"))
 	})
 }
