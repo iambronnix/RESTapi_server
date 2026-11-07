@@ -1,22 +1,11 @@
 package main
 
 import (
-//	dltOrder "RESTapi/api/DELETE/order"
-//	dltUser "RESTapi/api/DELETE/user"
-	gtOrder "RESTapi/api/GET/order"
-	gtPayment "RESTapi/api/GET/payment"
-//	gtUser "RESTapi/api/GET/user"
-//	pstOrder "RESTapi/api/POST/order"
-//	pstPayment "RESTapi/api/POST/payment"
-//	pstUser "RESTapi/api/POST/user"
-//	aptOrder "RESTapi/api/PUT/order"
-//	aptPaymemt "RESTapi/api/PUT/payment"
-//	aptUser "RESTapi/api/PUT/user"
-//	mdl "RESTapi/api/middleware"
+
+	mdl "RESTapi/api/middleware"
 	"io"
 	"sort"
 	"strings"
-
 	"log"
 	"net"
 	"net/http"
@@ -34,11 +23,19 @@ func (h Methods)ServeHTTP(w http.ResponseWriter, r *http.Request){
 	handler, ok := h[r.Method]
 	if ok {
 		if handler == nil{
-			http.Error(w, "null request", http.StatusBadRequest)
-		}
+			http.Error(w, "Internal Server Error", http.StatusBadRequest)
+		}else{
 		//parse the handler
 		handler.ServeHTTP(w,r)
+		}
+		return
 	}
+
+	w.Header().Add("Allow",h.allowedMethods())
+	if r.Method != http.MethodOptions{
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+	}
+	
 }
 
 func (h Methods)allowedMethods()string{
@@ -54,9 +51,10 @@ func (h Methods)allowedMethods()string{
 
 func DefaultHandler()http.Handler{
 	return Methods{
-		http.MethodGet: gtOrder.Orders(),
-		http.MethodPost: gtOrder.OrderId(),
-		http.MethodPut: gtPayment.Payments(),
+		http.MethodGet:mdl.GetUrlInspector(),
+		http.MethodPost:mdl.PostUrlInspector(), 
+	    http.MethodPut: mdl.PutUrlInspector(),
+	    http.MethodDelete:mdl.DeleteUrlInspector(),
 	}
 }
 
