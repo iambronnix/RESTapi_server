@@ -4,7 +4,6 @@ import (
 	"io"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 )
@@ -26,39 +25,39 @@ func (m OutGoing) Write(p []byte)(int, error){
 }
 
 //monitors requests
-func Monitor(next http.HandlerFunc)http.Handler{
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-	incoming := &Incoming{Logger: log.New(os.Stdout,"monitor:",0)}
-	outgoing := &Incoming{Logger: log.New(os.Stdout,"monitor:",0)}
+//func monitor(next http.HandlerFunc)http.Handler{
+	//return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	//incoming := &Incoming{Logger: log.New(os.Stdout,"monitor:",0)}
+	//outgoing := &Incoming{Logger: log.New(os.Stdout,"monitor:",0)}
 
-	done := make(chan struct{})
+	//done := make(chan struct{})
 
-	go func(w http.ResponseWriter, r *http.Request) {
-		defer close(done)
+	//go func(w http.ResponseWriter, r *http.Request) {
+		//defer close(done)
 		//write client side requests
-		b := make([]byte,uint64(1<<30))
-		j := io.TeeReader(r,incoming)
+		//b := make([]byte,uint64(1<<30))
+		//j := io.TeeReader(r,incoming)
 
-		n, err := j.Read(b)
-		if err != nil && err != io.EOF{
-			incoming.Println(err)
-			return
-		}
+		//n, err := j.Read(b)
+		//if err != nil && err != io.EOF{
+			//incoming.Println(err)
+			//return
+		//}
 		//logs server side response 
-		w := io.MultiWriter(w,outgoing)
-		_, err = w.Write(b[:n])
-		if err != nil && err != io.EOF{
-			OutGoing.Println(err)
-			return
+	//	w := io.MultiWriter(w,outgoing)
+		//_, err = w.Write(b[:n])
+		//if err != nil && err != io.EOF{
+			//OutGoing.Println(err)
+			//return
 			
-		}
+		//}
 		
-	}(w,r)
+//	}(w,r)
 
-	<-done
-	next.ServeHTTP(w,r)
-	})
-}
+	//<-done
+	//next.ServeHTTP(w,r)
+	//})
+//}
 //checks if the User has Authenticate with the system
 func Authenticate(next http.HandlerFunc)http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -99,5 +98,21 @@ func RestrictPrefix(prefix string,next http.Handler)http.Handler{
 			
 		}
 		next.ServeHTTP(w,r)
+	})
+}
+
+func DrainAndClose(next http.Handler)http.Handler{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+         next.ServeHTTP(w,r)
+		_,_ = io.Copy(io.Discard,r.Body)
+		_ = r.Body.Close()
+	})
+}
+
+
+func allowedPaths()http.Handler{
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		//getPath := []string{"/orders","/orders/orderId","/payment","user"}
+	w.Write([]byte("hello there"))
 	})
 }
