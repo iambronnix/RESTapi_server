@@ -1,7 +1,7 @@
 package order
 
 import (
-	"database/sql"
+		"database/sql"
 	"net/http"
 )
 type size struct{
@@ -38,9 +38,11 @@ type Handlers struct{
 
 //retrive general lists of orders
 func Orders()http.Handler{
-	_ = &Handlers{}
+	_ = &Handlers{}	
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//handle orders logic here 
+		//handle code here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("This is orders endpoint"))
 	})
 }
 
@@ -49,5 +51,7 @@ func OrderId()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle retrieve order by id here
+		w.WriteHeader(http.StatusFound)
+		w.Write([]byte("This is order by ID endpoint"))
 	})
 }
