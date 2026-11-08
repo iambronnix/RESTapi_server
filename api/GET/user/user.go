@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"net/http"
+	"time"
 )
 
 type Handlers struct{
@@ -13,6 +14,7 @@ func Users()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle users code here
+		time.Sleep(5*time.Second)
 		w.WriteHeader(http.StatusFound)
 		w.Write([]byte("get/user")) 
 	})

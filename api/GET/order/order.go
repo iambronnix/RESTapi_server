@@ -1,8 +1,9 @@
 package order
 
 import (
-		"database/sql"
+	"database/sql"
 	"net/http"
+	"time"
 )
 type size struct{
 	small,
@@ -51,6 +52,7 @@ func OrderId()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle retrieve order by id here
+		time.Sleep(5*time.Second)
 		w.WriteHeader(http.StatusFound)
 		w.Write([]byte("get/order/orderId"))
 	})
