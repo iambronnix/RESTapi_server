@@ -69,13 +69,13 @@ func (m OutGoing) Write(p []byte)(int, error){
 	//})
 //}
 //checks if the User has Authenticate with the system
-func Authenticate(next http.HandlerFunc)http.Handler{
+func Authenticate(logged bool,next http.Handler)http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//simulate authentication
 		// 
 		IsAuthenticated := true
 
-		if !IsAuthenticated{
+		if logged != IsAuthenticated{
 			http.Error(w, "UnAuthorized",http.StatusUnauthorized)
 			return 
 		}
@@ -84,7 +84,7 @@ func Authenticate(next http.HandlerFunc)http.Handler{
 }
 
 //checks if the title of the user and logs into the system
-func Authorised(role string, next http.HandlerFunc)http.Handler{
+func Authorised(role string, next http.Handler)http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//simulate authorization 
 		Authorised := "admin"
