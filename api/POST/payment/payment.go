@@ -3,6 +3,7 @@ package payment
 import (
 	"database/sql"
 	"net/http"
+	"time"
 )
 
 type Handlers struct{
@@ -13,7 +14,8 @@ type Handlers struct{
 func Payments()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		//handle payment POST logic here 
+		//handle payment POST logic here
+		time.Sleep(5*time.Second) 
 		w.WriteHeader(http.StatusFound)
 		w.Write([]byte("post/payment"))
 	})
