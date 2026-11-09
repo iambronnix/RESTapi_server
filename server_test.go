@@ -1,8 +1,6 @@
 package main
 
 import (
-	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net"
@@ -10,17 +8,6 @@ import (
 	"testing"
 	"time"
 )
-
-type size struct{
-	small,
-	medium,
-	big bool
-}
-
-type OrderItem struct{
-	product string
-	Size size
-}
 
 func TestSimpleHTTPServer(t *testing.T) {
 	srv := &http.Server{
@@ -42,60 +29,52 @@ func TestSimpleHTTPServer(t *testing.T) {
 		}
 	}()
 
-	order := &OrderItem{
-		product: "coffee",
-		Size: size{
-			small: true,
-			medium: false,
-			big: false,
-		},
-	}
-	buf := new(bytes.Buffer)
-	err = json.NewEncoder(buf).Encode(order)
-	if err != nil{
-		t.Error(err)
-	}
-
-	
    testCases := []struct{
      method string
      body io.Reader
      code  int
      response string
    }{
-
+   //GET tests
    {http.MethodGet,nil,http.StatusFound,"get/order"},
    {http.MethodGet,nil,http.StatusFound,"get/order/orderId"},
    {http.MethodGet,nil,http.StatusFound,"get/payment"},
    {http.MethodGet,nil,http.StatusFound,"get/user"},
-   {http.MethodPost,nil,http.StatusFound,"post/order"},
-   {http.MethodPost,nil,http.StatusFound,"post/order/cancel"},
-   {http.MethodPost,nil,http.StatusFound,"post/payment"},
-   {http.MethodPost,nil,http.StatusFound,"post/user"},
+   //POST tests
+   {http.MethodPost,nil,http.StatusCreated,"post/order"},
+   {http.MethodPost,nil,http.StatusCreated,"post/order/cancel"},
+   {http.MethodPost,nil,http.StatusCreated,"post/payment"},
+   {http.MethodPost,nil,http.StatusCreated,"post/user"},
+   //PUT tests
    {http.MethodPut,nil,http.StatusFound,"put/order"},
    {http.MethodPut,nil,http.StatusFound,"put/payment"},
    {http.MethodPut,nil,http.StatusFound,"put/user"},
-   {http.MethodDelete,nil,http.StatusFound,"delete/order"},
-   {http.MethodDelete,nil,http.StatusFound,"delete/user"},
+   //DELETE tests
+   {http.MethodDelete,nil,http.StatusAccepted,"delete/order"},
+   {http.MethodDelete,nil,http.StatusAccepted,"delete/user"},
    
    
    }
    
-fmt.Print(buf)
+
    client := new(http.Client)
-   path1 := fmt.Sprintf("http://%s/order", srv.Addr)
+   //GET url
+   path1 := fmt.Sprintf("http://%s/orders", srv.Addr)
    path2 := fmt.Sprintf("http://%s/order/orderId",srv.Addr)
-   path3 := fmt.Sprintf("http://%s/payment",srv.Addr)
-   path4 := fmt.Sprintf("http://%s/user",srv.Addr)
+   path3 := fmt.Sprintf("http://%s/order/payment",srv.Addr)
+   path4 := fmt.Sprintf("http://%s/get/user",srv.Addr)
+   //POST url
    path5 := fmt.Sprintf("http://%s/order", srv.Addr)
    path6 := fmt.Sprintf("http://%s/order/cancel", srv.Addr)
-   path7 := fmt.Sprintf("http://%s/payment", srv.Addr)
-   path8 := fmt.Sprintf("http://%s/user", srv.Addr)
+   path7 := fmt.Sprintf("http://%s/order/pay", srv.Addr)
+   path8 := fmt.Sprintf("http://%s/create/user", srv.Addr)
+   //PUT url
    path9 := fmt.Sprintf("http://%s/order", srv.Addr)
-   path10 := fmt.Sprintf("http://%s/payment", srv.Addr)
-   path11 := fmt.Sprintf("http://%s/user", srv.Addr)
-   path12 := fmt.Sprintf("http://%s/order", srv.Addr)
-   path13 := fmt.Sprintf("http://%s/user", srv.Addr)
+   path10 := fmt.Sprintf("http://%s/order/payment", srv.Addr)
+   path11 := fmt.Sprintf("http://%s/update/user", srv.Addr)
+   //DELETE url
+   path12 := fmt.Sprintf("http://%s/order/orderId", srv.Addr)
+   path13 := fmt.Sprintf("http://%s/delete/user", srv.Addr)
    path := []string{path1,path2,path3,path4,path5,path6,path7,path8,path9,path10,path11,path12,path13}
   
    
