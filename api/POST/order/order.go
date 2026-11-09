@@ -36,7 +36,7 @@ func Order()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle post orders logic here
 		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusFound)
+		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte("post/order"))
 	})
 }
@@ -45,7 +45,7 @@ func CancelOrder()http.Handler{
 	_ = &Handlers{}
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusFound)
+		w.WriteHeader(http.StatusCreated)
 		w.Write([]byte("post/order/cancel"))
 		//handle cancel logic here
 	})
