@@ -1,31 +1,40 @@
 package main
 
 import (
-
 	mdl "RESTapi/api/middleware"
+	"fmt"
 	"io"
-	"sort"
-	"strings"
 	"log"
 	"net"
 	"net/http"
+	"sort"
+	"strings"
 	"time"
 )
 
 type Methods map[string]http.Handler
+var  Counter map[string]int
+var id = 0
 
+//since this part is can't be handled concurrently according to amdahl's law 
+//then it limits the whole program
 func (h Methods)ServeHTTP(w http.ResponseWriter, r *http.Request){
 	defer func(r io.ReadCloser){
-		_,_ = io.Copy(io.Discard,r)
+			_,_ = io.Copy(io.Discard,r)
 		_ = r.Close()
 	}(r.Body)
+	
 
+	
 	handler, ok := h[r.Method]
 	if ok {
 		if handler == nil{
 			http.Error(w, "Internal Server Error", http.StatusBadRequest)
 		}else{
 		//parse the handler
+		
+		id += 1
+		fmt.Println("request:",id)
 		handler.ServeHTTP(w,r)
 		}
 		return
@@ -51,10 +60,10 @@ func (h Methods)allowedMethods()string{
 
 func DefaultHandler()http.Handler{
 	return Methods{
-		http.MethodGet:mdl.GetUrlInspector(),
-		http.MethodPost:mdl.PostUrlInspector(), 
-	    http.MethodPut: mdl.PutUrlInspector(),
-	    http.MethodDelete:mdl.DeleteUrlInspector(),
+		http.MethodGet:mdl.Authenticate(true,mdl.Authorised("admin",mdl.GetUrlInspector())),
+		http.MethodPost:mdl.Authenticate(true,mdl.Authorised("admin",mdl.PostUrlInspector())),
+	    http.MethodPut:mdl.Authenticate(true,mdl.Authorised("admin",mdl.PutUrlInspector())),
+	    http.MethodDelete:mdl.Authenticate(true,mdl.Authorised("admin",mdl.DeleteUrlInspector())),					
 	}
 }
 
