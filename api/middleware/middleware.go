@@ -117,13 +117,17 @@ func GetUrlInspector()http.Handler{
 		urlPath := r.URL.Path
 		//switch acts as a secondary multiplexer 
 		switch urlPath{
-			case "/order":
+			//retrieve a list of orders
+			case "/orders":
 			gtOrder.Orders().ServeHTTP(w,r)
+			//retrieve details of a particular order
 			case "/order/orderId":
 			gtOrder.OrderId().ServeHTTP(w,r)
-			case "/payment":
+			//retrieve payment of a particular order
+			case "/order/payment":
 			gtPayment.Payments().ServeHTTP(w,r)
-			case "/user":
+			//retrieve details of a particular person
+			case "/get/user":
 			gtUser.Users().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
@@ -137,13 +141,17 @@ func PostUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
 		switch urlPath{
+			//place an order
 			case "/order":
 			pstOrder.Order().ServeHTTP(w,r)
+			//cancel an order
 			case "/order/cancel":
 			pstOrder.CancelOrder().ServeHTTP(w,r)
-			case "/payment":
+			//pay for an order
+			case "/order/pay":
 			pstPayment.Payments().ServeHTTP(w,r)
-			case "/user":
+			//create a new user account
+			case "/create/user":
 			pstUser.User().ServeHTTP(w,r)
 			default :
 			w.WriteHeader(http.StatusBadRequest)
@@ -157,11 +165,14 @@ func PutUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
 		switch urlPath{
+			//update an order 
 			case "/order":
 			aptOrder.Order().ServeHTTP(w,r)
-			case "/payment":
+			//update a payment
+			case "/order/payment":
 			aptPaymemt.Payment().ServeHTTP(w,r)
-			case "/user":
+			//update a user details
+			case "/update/user":
 			aptUser.User().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
@@ -174,9 +185,11 @@ func DeleteUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
 		switch urlPath{
-			case "/order":
+			//delete an order 
+			case "/order/orderId":
 			dltOrder.Order().ServeHTTP(w,r)
-			case "/user":
+			//delete user-details
+			case "/delete/user":
 			dltUser.User().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
