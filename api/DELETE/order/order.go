@@ -17,7 +17,7 @@ func Order()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle delete order logic here
 		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusFound)
+		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte("delete/order"))
 	})
 }
