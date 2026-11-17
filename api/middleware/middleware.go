@@ -119,7 +119,7 @@ func GetUrlInspector()http.Handler{
 		switch urlPath{
 			//retrieve a list of orders
 			case "/orders":
-			gtOrder.Orders().ServeHTTP(w,r)
+			gtOrder.ListOrders().ServeHTTP(w,r)
 			//retrieve details of a particular order
 			case "/order/orderId":
 			gtOrder.OrderId().ServeHTTP(w,r)
