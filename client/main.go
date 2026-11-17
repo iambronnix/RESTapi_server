@@ -86,21 +86,22 @@ func (c *counter)getSimulated(ctx context.Context,wg *sync.WaitGroup){
       c.reqId++
       c.Unlock()
       resp, err := http.DefaultClient.Do(req)
-      if err != nil{
+      if err == nil{
+      c.Lock()
+      c.respId++
+      c.Unlock()      
+      }else{      
       log.Println(err)
       continue
       }
       
       time.Sleep(2 * time.Second)
       data, err := io.ReadAll(resp.Body)
-      if err != nil{
-      log.Println(err)
-      }
+      if err !=nil{
+    log.Println(err)
+   }   
       
-       fmt.Println(resp.StatusCode, string(data))
-       c.Lock()
-       c.respId++
-       c.Unlock()
+       fmt.Println(c.respId,resp.StatusCode, string(data))       
     
    }
      
@@ -144,7 +145,7 @@ func (c *counter)postSimulated(ctx context.Context,wg *sync.WaitGroup){
    log.Println(err)
    }
    
-   fmt.Println(resp.StatusCode, string(data))
+   fmt.Println(c.respId,resp.StatusCode, string(data))
    c.Lock()
    c.respId++
    c.Unlock()
@@ -189,7 +190,7 @@ func (c *counter)putSimulated(ctx context.Context,wg *sync.WaitGroup){
    log.Println(err)
    }
      
-   fmt.Println(resp.StatusCode, string(data))
+   fmt.Println(c.respId,resp.StatusCode, string(data))
    c.Lock()
    c.respId++
    c.Unlock()
@@ -233,7 +234,7 @@ func (c *counter)deleteSimulated(ctx context.Context,wg *sync.WaitGroup){
    log.Println(err)
    }
       
-    fmt.Println(resp.StatusCode, string(data))
+    fmt.Println(c.respId,resp.StatusCode, string(data))
    c.Lock()
    c.respId++
    c.Unlock()
