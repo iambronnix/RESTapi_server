@@ -2,58 +2,72 @@ package order
 
 import (
 	"database/sql"
+	"encoding/json"
 	"net/http"
-	"time"
 )
-type size struct{
-	small,
-	medium,
-	big bool
-}
+type Size int
+const(
+	Small Size = iota
+	Medium
+	Big
+)
 type OrderItem struct{
-	product string
-	Size size
+	Product string
+	Size Size
 }
-type status struct{
-	created ,
-	progress,
-	cancelled,
-	dispatched,
-	delivered bool
-}
-type CreateOrder struct{
-	id    ,
+type Status int
+const (
+	Created  Status = iota
+	Progress
+	Cancelled
+	Dispatched
+	Delivered
+)
+type Order struct{
+	Id   string
 	Created string
-	Status status
+	Status Status
     Order OrderItem	
 }
 
-type CreateOrders struct{
-	Orders []CreateOrder
+type Orders struct{
+	Orders []Order
 	
 }
 
 type Handlers struct{
-	db *sql.DB
+    *sql.DB
 }
 
 //retrive general lists of orders
-func Orders()http.Handler{
+func ListOrders()http.Handler{
 	_ = &Handlers{}	
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle code here
-		w.WriteHeader(http.StatusFound)
-		w.Write([]byte("get/order"))
+		// persist the database here
+		
+		response := &Orders{}
+		err := json.NewEncoder(w).Encode(response)
+		if err != nil{
+			http.Error(w, "internal server err",http.StatusInternalServerError)
+			return 
+		}
+		
 	})
 }
 
 //retrieve order by ID
 func OrderId()http.Handler{
-	_ = &Handlers{}
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle retrieve order by id here
-		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusFound)
-		w.Write([]byte("get/order/orderId"))
+		// persist the database here
+
+		response := &Order{}
+		err := json.NewEncoder(w).Encode(response)
+		if err != nil{
+         http.Error(w,"internal server err",http.StatusInternalServerError)	
+        return 		
+		}
+		
 	})
 }

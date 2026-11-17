@@ -1,53 +1,46 @@
 package order
 
 import (
-	"database/sql"
+	
+	"encoding/json"
 	"net/http"
-	"time"
+
+ schema "RESTapi/api/GET/order"
 )
-type size struct{
-    Small bool `json:"omitempty"`
-	Medium bool 
-	Big bool	
-}
 
-type orderItem struct{
-	product string
-	Size size
-	Quantity int
-}
-
-type createOrder struct{
-	id string
-	created time.Time 
-	Orders []orderItem
-}
-type Orders struct{
-	Order []createOrder
-}
-
-type Handlers struct{
-	db *sql.DB
-}
 
 //create an order
 func Order()http.Handler{
-	_ = &Handlers{}
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle post orders logic here
-		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("post/order"))
+		order := &schema.Order{}
+		json.NewDecoder(r.Body).Decode(order)
+		//persist database here
+
+		
+	   response := &schema.Order{}		
+	    err :=	json.NewEncoder(w).Encode(response)
+		if err != nil{
+			http.Error(w,"Internal Server Error",http.StatusInternalServerError)
+			return 
+		}
 	})
 }
 //cancel an order 
 func CancelOrder()http.Handler{
-	_ = &Handlers{}
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		time.Sleep(5*time.Second)
-		w.WriteHeader(http.StatusCreated)
-		w.Write([]byte("post/order/cancel"))
-		//handle cancel logic here
+		//handle db operations here 
+		// 
+
+		response := &schema.Order{}
+		err := json.NewEncoder(w).Encode(response)
+		if err != nil{
+			http.Error(w,"Internal Server Error",http.StatusInternalServerError)
+			return 
+		}
+		
 	})
 }
 
