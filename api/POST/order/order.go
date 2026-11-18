@@ -1,13 +1,12 @@
 package order
 
 import (
-	
 	"encoding/json"
+	"fmt"
 	"net/http"
 
- schema "RESTapi/api/GET/order"
+	schema "RESTapi/api/GET/order"
 )
-
 
 //create an order
 func Order()http.Handler{
@@ -32,7 +31,8 @@ func CancelOrder()http.Handler{
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle db operations here 
-		// 
+		param := r.URL.RawQuery
+	    fmt.Println(param) 
 
 		response := &schema.Order{}
 		err := json.NewEncoder(w).Encode(response)

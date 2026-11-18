@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 type User struct {
@@ -21,6 +22,8 @@ func Users()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle users code here
 		// persist db here
+		param := r.URL.RawQuery
+		fmt.Println(param)
 
 		
 		response := &User{}

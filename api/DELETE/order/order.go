@@ -1,22 +1,21 @@
 package order
 
 import (
-	"database/sql"
+	"fmt"
 	"net/http"
-	"time"
+
 )
 
-type Handlers struct{
-	db *sql.DB
-}
+
 
 //cancel an order
 func Order()http.Handler{
-	_ = &Handlers{}
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle delete order logic here
-		time.Sleep(5*time.Second)
+		param := r.URL.RawQuery
+		fmt.Println(param)
+		
 		w.WriteHeader(http.StatusAccepted)
 		w.Write([]byte("delete/order"))
 	})
