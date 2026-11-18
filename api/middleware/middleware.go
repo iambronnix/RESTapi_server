@@ -1,22 +1,26 @@
 package middleware
 
 import (
+	dltOrder "RESTapi/api/DELETE/order"
+	dltUser "RESTapi/api/DELETE/user"
 	gtOrder "RESTapi/api/GET/order"
 	gtPayment "RESTapi/api/GET/payment"
 	gtUser "RESTapi/api/GET/user"
-	dltOrder "RESTapi/api/DELETE/order"
-	dltUser "RESTapi/api/DELETE/user"
 	pstOrder "RESTapi/api/POST/order"
 	pstPayment "RESTapi/api/POST/payment"
 	pstUser "RESTapi/api/POST/user"
 	aptOrder "RESTapi/api/PUT/order"
 	aptPaymemt "RESTapi/api/PUT/payment"
 	aptUser "RESTapi/api/PUT/user"
+	"database/sql"
 	"log"
 	"net/http"
 	"path"
 	"strings"
 )
+type InjectDependancies struct{
+	*sql.DB
+}
 
 type Incoming struct{
 	*log.Logger
@@ -115,10 +119,11 @@ func RestrictPrefix(prefix string,next http.Handler)http.Handler{
 func GetUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
+		
 		//switch acts as a secondary multiplexer 
 		switch urlPath{
 			//retrieve a list of orders
-			case "/orders":
+			case "/order":
 			gtOrder.ListOrders().ServeHTTP(w,r)
 			//retrieve details of a particular order
 			case "/order/orderId":
@@ -127,11 +132,11 @@ func GetUrlInspector()http.Handler{
 			case "/order/payment":
 			gtPayment.Payments().ServeHTTP(w,r)
 			//retrieve details of a particular person
-			case "/get/user":
+			case "/user":
 			gtUser.Users().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
-			
+			return 			
 		}
 	})
 }
@@ -140,6 +145,7 @@ func GetUrlInspector()http.Handler{
 func PostUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
+		
 		switch urlPath{
 			//place an order
 			case "/order":
@@ -148,13 +154,14 @@ func PostUrlInspector()http.Handler{
 			case "/order/cancel":
 			pstOrder.CancelOrder().ServeHTTP(w,r)
 			//pay for an order
-			case "/order/pay":
+			case "/order/payment":
 			pstPayment.Payments().ServeHTTP(w,r)
 			//create a new user account
-			case "/create/user":
+			case "/user":
 			pstUser.User().ServeHTTP(w,r)
 			default :
 			w.WriteHeader(http.StatusBadRequest)
+			return 
 			
 		}
 	})
@@ -164,6 +171,7 @@ func PostUrlInspector()http.Handler{
 func PutUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
+		
 		switch urlPath{
 			//update an order 
 			case "/order":
@@ -172,10 +180,11 @@ func PutUrlInspector()http.Handler{
 			case "/order/payment":
 			aptPaymemt.Payment().ServeHTTP(w,r)
 			//update a user details
-			case "/update/user":
+			case "/user":
 			aptUser.User().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
+			return 
 		}
 	})
 }
@@ -184,15 +193,17 @@ func PutUrlInspector()http.Handler{
 func DeleteUrlInspector()http.Handler{
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		urlPath := r.URL.Path
+		
 		switch urlPath{
 			//delete an order 
-			case "/order/orderId":
+			case "/order":
 			dltOrder.Order().ServeHTTP(w,r)
 			//delete user-details
-			case "/delete/user":
+			case "/user":
 			dltUser.User().ServeHTTP(w,r)
 			default:
 			w.WriteHeader(http.StatusBadRequest)
+			return 
 		}
 	})
 }
