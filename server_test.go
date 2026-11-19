@@ -59,10 +59,10 @@ func TestSimpleHTTPServer(t *testing.T) {
 
    client := new(http.Client)
    //GET url
-   path1 := fmt.Sprintf("http://%s/orders", srv.Addr)
+   path1 := fmt.Sprintf("http://%s/orders?cancelled=true", srv.Addr)
    path2 := fmt.Sprintf("http://%s/order/orderId",srv.Addr)
    path3 := fmt.Sprintf("http://%s/order/payment",srv.Addr)
-   path4 := fmt.Sprintf("http://%s/get/user",srv.Addr)
+   path4 := fmt.Sprintf("http://%s/user",srv.Addr)
    //POST url
    path5 := fmt.Sprintf("http://%s/order", srv.Addr)
    path6 := fmt.Sprintf("http://%s/order/cancel", srv.Addr)
@@ -71,10 +71,10 @@ func TestSimpleHTTPServer(t *testing.T) {
    //PUT url
    path9 := fmt.Sprintf("http://%s/order", srv.Addr)
    path10 := fmt.Sprintf("http://%s/order/payment", srv.Addr)
-   path11 := fmt.Sprintf("http://%s/update/user", srv.Addr)
+   path11 := fmt.Sprintf("http://%s/user", srv.Addr)
    //DELETE url
    path12 := fmt.Sprintf("http://%s/order/orderId", srv.Addr)
-   path13 := fmt.Sprintf("http://%s/delete/user", srv.Addr)
+   path13 := fmt.Sprintf("http://%s/user", srv.Addr)
    path := []string{path1,path2,path3,path4,path5,path6,path7,path8,path9,path10,path11,path12,path13}
   
    
