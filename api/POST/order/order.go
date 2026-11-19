@@ -1,6 +1,7 @@
 package order
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -8,13 +9,14 @@ import (
 	schema "RESTapi/api/GET/order"
 )
 
+var buf bytes.Buffer
+
 //create an order
 func Order()http.Handler{
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		//handle post orders logic here
-		order := &schema.Order{}
-		json.NewDecoder(r.Body).Decode(order)
+		json.NewDecoder(r.Body).Decode(&buf)
 		//persist database here
 
 		
