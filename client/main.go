@@ -28,7 +28,15 @@ type counter struct{
 	 sync.Mutex
 }
 func main(){
-
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	wg.Add(1)
+	go urlInspector(ctx,wg)
+	wg.Wait()
+	
+}
+func mainCode(){
+	
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 	c := &counter{}
@@ -56,9 +64,25 @@ func main(){
    fmt.Println(c.respId)
    fmt.Printf("success rate :%v",avg)
 
-	
 
-	
+}
+
+func urlInspector(ctx context.Context, wg *sync.WaitGroup){
+	defer wg.Done()
+    urlPath := 	"http://localhost:8443/order/payment?paid"
+
+    req, err := http.NewRequestWithContext(ctx,http.MethodPost,urlPath,nil)
+    if err != nil{
+    log.Fatal(err)
+    }
+
+    resp, err := http.DefaultClient.Do(req)
+    if err != nil{
+    log.Fatal(err)
+    }
+   data, err := io.ReadAll(resp.Body)
+   fmt.Println(string(data))
+   
 }
 
 
